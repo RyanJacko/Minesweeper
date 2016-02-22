@@ -7,7 +7,7 @@ private int NUM_COLS = 20;//Declare and initialize NUM_ROWS and NUM_COLS = 20
 private MSButton[][] buttons;
 private MSButton[][] buttons1;
 private MSButton restartbutton; //2d array of minesweeper buttons
-private MSButton markbutton;
+private UIButton markbutton;
 private ArrayList <MSButton> bombs = new ArrayList <MSButton> ();
 private ArrayList <MSButton> bombs1 = new ArrayList <MSButton> ();
 //ArrayList of just the minesweeper buttons that are mined
@@ -20,7 +20,7 @@ void setup ()
 
   // make the manager
   Interactive.make( this );
-  markbutton = new MSButton(0,0);
+  markbutton = new UIButton(0,0);
   markbutton.x =400;
   markbutton.y =100;
   markbutton.width = 200;
@@ -123,7 +123,47 @@ public void displayWinningMessage()
 
   //your code here
 }
+public class UIButton
+{
+   private int r, c,Color;
+  private float x, y, width, height;
+  private boolean clicked, marked,cheatmark;
+  private String label;
 
+
+  public MSButton ( int rr, int cc )
+  {
+    width = 400/NUM_COLS;
+    height = 400/NUM_ROWS;
+    r = rr;
+    c = cc; 
+    x = c*width;
+    y = r*height;
+    label = "";
+    marked = clicked = false;
+    Interactive.add( this ); // register it with the manager
+  }
+  public boolean isMarked()
+  {
+    return marked;
+  }
+  public boolean isClicked()
+  {
+    return clicked;
+  }
+  // called by manager
+  
+
+  public void mousePressed () 
+  {
+  }
+  public void setLabel(String newLabel)
+  {
+    label = newLabel;
+  }
+  public void draw (){
+    if(clicked == true){
+      cheat = true;
 public class MSButton
 {
   private int r, c,Color;
@@ -153,9 +193,11 @@ public class MSButton
     return clicked;
   }
   // called by manager
+  
 
   public void mousePressed () 
   {
+    
     bombs1 = new ArrayList <MSButton> ();
     if (restartbutton == this) {
       for (int r = 0; r < NUM_ROWS; r++) {
@@ -180,6 +222,7 @@ public class MSButton
       clicked = true;
     else 
     return;
+  
 
 
     if (keyPressed == true) {
