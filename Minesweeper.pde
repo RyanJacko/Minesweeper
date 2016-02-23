@@ -1,5 +1,6 @@
 import de.bezier.guido.*;
 boolean mark;
+public boolean cheating = false;
 private boolean gameOver = false;
 private int numMarkedBombs = 0;
 private int NUM_ROWS = 20;
@@ -20,7 +21,7 @@ void setup ()
 
   // make the manager
   Interactive.make( this );
-  markbutton = new UIButton(0,0);
+  markbutton = new UIButton(0, 0);
   markbutton.x =400;
   markbutton.y =100;
   markbutton.width = 200;
@@ -50,17 +51,15 @@ public void setBombs()
   while (x < 50) {
     int row = (int)(Math.random()*NUM_ROWS);
     int col = (int)(Math.random()*NUM_COLS);
+    
 
-    if (!bombs.contains(buttons[row][col])) {
 
-      bombs.add(buttons[row][col]);
-      if(markbutton.isClicked()==false){
-          buttons[row][col].cheatmark=true;
 
-          buttons[row][col].Color = 255;
+      if (!bombs.contains(buttons[row][col])) {
+        buttons[row][col].Code=true;
+
+        bombs.add(buttons[row][col]);
       }
-        
-      
     }
 
     x++;
@@ -69,7 +68,7 @@ public void setBombs()
 
 
   //your code
-}
+
 
 public void draw ()
 {
@@ -78,7 +77,7 @@ public void draw ()
   if (isWon()) {
     displayWinningMessage();
   }
-  for (int x = 0; x< bombs.size(); x++) {
+  for (int x = 0; x< bombs.size (); x++) {
     if (bombs.get(x).isMarked()) {
       numMarkedBombs+=1;
       noLoop();
@@ -87,8 +86,10 @@ public void draw ()
   fill(0);
   rect(420, 150, 50, 50);
   fill(255);
+
   //text(numMarkedBombs, 420, 150);
 }
+
 public boolean isWon()
 {
 
@@ -125,13 +126,13 @@ public void displayWinningMessage()
 }
 public class UIButton
 {
-   private int r, c,Color;
+  private int r, c, Color;
   private float x, y, width, height;
-  private boolean clicked, marked,cheatmark;
+  private boolean clicked, marked, cheatmark;
   private String label;
 
 
-  public MSButton ( int rr, int cc )
+  public UIButton ( int rr, int cc )
   {
     width = 400/NUM_COLS;
     height = 400/NUM_ROWS;
@@ -152,23 +153,37 @@ public class UIButton
     return clicked;
   }
   // called by manager
-  
+
 
   public void mousePressed () 
   {
+    if (clicked == false) {
+      clicked = true;
+    } else if (clicked = true) {
+      clicked = false;
+    }
   }
   public void setLabel(String newLabel)
   {
     label = newLabel;
   }
-  public void draw (){
-    if(clicked == true){
-      cheat = true;
+  public void draw () {
+    if (clicked==true) {
+      cheating = true;
+      fill( 200 );
+    } else {
+      fill( 100 );
+    }
+    rect(x, y, width, height);
+    fill(0);
+    text(label, x+width/2, y+height/2);
+  }
+}
 public class MSButton
 {
-  private int r, c,Color;
+  private int r, c, Color;
   private float x, y, width, height;
-  private boolean clicked, marked,cheatmark;
+  private boolean clicked, marked, cheatmark,Code;
   private String label;
 
 
@@ -193,11 +208,11 @@ public class MSButton
     return clicked;
   }
   // called by manager
-  
+
 
   public void mousePressed () 
   {
-    
+
     bombs1 = new ArrayList <MSButton> ();
     if (restartbutton == this) {
       for (int r = 0; r < NUM_ROWS; r++) {
@@ -221,8 +236,8 @@ public class MSButton
     if (clicked == false)
       clicked = true;
     else 
-    return;
-  
+      return;
+
 
 
     if (keyPressed == true) {
@@ -264,21 +279,20 @@ public class MSButton
 
   public void draw () 
   { 
-    if(cheatmark==true)
+    if (restartbutton!=this&&Code==true)
     {
-      fill(0,0,Color);
-    }
-    else if (marked) {
+      fill(0,0,255);
+    } else if (marked) {
       fill(0);
     } else if ( clicked && bombs.contains(this) ) 
       fill(255, 0, 0);
     else if (clicked)
       fill( 200 );
     else 
-    fill( 100 );
-    
-    
-  
+      fill( 100 );
+
+
+
 
     rect(x, y, width, height);
     fill(0);
