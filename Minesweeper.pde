@@ -1,6 +1,5 @@
 import de.bezier.guido.*;
 boolean mark;
-public boolean cheating = false;
 private boolean gameOver = false;
 private int numMarkedBombs = 0;
 private int NUM_ROWS = 20;
@@ -51,14 +50,14 @@ public void setBombs()
   while (x < 50) {
     int row = (int)(Math.random()*NUM_ROWS);
     int col = (int)(Math.random()*NUM_COLS);
-    
 
+    if (!bombs.contains(buttons[row][col])) {
 
+      bombs.add(buttons[row][col]);
+      if (markbutton.isClicked()==false) {
+        buttons[row][col].cheatmark=true;
 
-      if (!bombs.contains(buttons[row][col])) {
-        buttons[row][col].Code=true;
-
-        bombs.add(buttons[row][col]);
+        buttons[row][col].Color = 255;
       }
     }
 
@@ -68,16 +67,17 @@ public void setBombs()
 
 
   //your code
-
+}
 
 public void draw ()
 {
   background( 0 );
 
   if (isWon()) {
+
     displayWinningMessage();
   }
-  for (int x = 0; x< bombs.size (); x++) {
+  for (int x = 0; x< bombs.size(); x++) {
     if (bombs.get(x).isMarked()) {
       numMarkedBombs+=1;
       noLoop();
@@ -86,24 +86,32 @@ public void draw ()
   fill(0);
   rect(420, 150, 50, 50);
   fill(255);
-
+  System.out.println(isWon());
   //text(numMarkedBombs, 420, 150);
 }
-
 public boolean isWon()
 {
 
   for (int i = 0; i < NUM_ROWS; i++) {
     for (int j = 0; j < NUM_COLS; j++) {
-      if (bombs.contains(buttons[i][j].clicked) || !buttons[i][j].clicked) {
-        return false;
+      if (bombs.contains(!buttons[i][j].clicked) || buttons[i][j].clicked) {
+
+        return true;
       }
     }
   }
   //your code here
-  return true;
+  return false;
 }
+public void displayWinningMessage()
+{
 
+  String winMessage = "GOODGAME";
+  fill(255, 0, 0);
+  text(winMessage, 450, 100 );
+
+  //your code here
+}
 public void displayLosingMessage()
 {
 
@@ -115,15 +123,7 @@ public void displayLosingMessage()
 
   //your code here
 }
-public void displayWinningMessage()
-{
 
-  String winMessage = "GOODGAME";
-  fill(255, 0, 0);
-  text(winMessage, 450, 100 );
-
-  //your code here
-}
 public class UIButton
 {
   private int r, c, Color;
@@ -169,7 +169,7 @@ public class UIButton
   }
   public void draw () {
     if (clicked==true) {
-      cheating = true;
+      //cheating = true;
       fill( 200 );
     } else {
       fill( 100 );
@@ -183,7 +183,7 @@ public class MSButton
 {
   private int r, c, Color;
   private float x, y, width, height;
-  private boolean clicked, marked, cheatmark,Code;
+  private boolean clicked, marked, cheatmark;
   private String label;
 
 
@@ -236,7 +236,7 @@ public class MSButton
     if (clicked == false)
       clicked = true;
     else 
-      return;
+    return;
 
 
 
@@ -279,9 +279,9 @@ public class MSButton
 
   public void draw () 
   { 
-    if (restartbutton!=this&&Code==true)
+    if (cheatmark==true)
     {
-      fill(0,0,255);
+      fill(0, 0, Color);
     } else if (marked) {
       fill(0);
     } else if ( clicked && bombs.contains(this) ) 
@@ -289,7 +289,7 @@ public class MSButton
     else if (clicked)
       fill( 200 );
     else 
-      fill( 100 );
+    fill( 100 );
 
 
 
