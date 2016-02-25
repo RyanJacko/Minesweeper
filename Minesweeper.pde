@@ -7,6 +7,7 @@ private int NUM_COLS = 20;//Declare and initialize NUM_ROWS and NUM_COLS = 20
 private MSButton[][] buttons;
 private MSButton[][] buttons1;
 private MSButton restartbutton; //2d array of minesweeper buttons
+private MSButton flagButton;
 private UIButton markbutton;
 private ArrayList <MSButton> bombs = new ArrayList <MSButton> ();
 private ArrayList <MSButton> bombs1 = new ArrayList <MSButton> ();
@@ -26,6 +27,13 @@ void setup ()
   markbutton.width = 200;
   markbutton.height = 100;
   markbutton.setLabel("CHEAT");
+  flagButton = new MSButton(0, 0);
+  flagButton.x =400;
+  flagButton.y =200;
+  flagButton.width = 200;
+  flagButton.height = 100;
+  flagButton.setLabel("TURN ON TO FLAG");
+  
 
   restartbutton = new MSButton(0, 0);
   restartbutton.x =400;
@@ -57,7 +65,7 @@ public void setBombs()
       if (markbutton.isClicked()==false) {
         buttons[row][col].cheatmark=true;
 
-        buttons[row][col].Color = 255;
+        buttons[row][col].Color3 = 255;
       }
     }
 
@@ -73,7 +81,7 @@ public void draw ()
 {
   background( 0 );
 
-  if (isWon()) {
+  if (isWon()==false) {
 
     displayWinningMessage();
   }
@@ -86,7 +94,7 @@ public void draw ()
   fill(0);
   rect(420, 150, 50, 50);
   fill(255);
-  System.out.println(isWon());
+  //System.out.println(isWon());
   //text(numMarkedBombs, 420, 150);
 }
 public boolean isWon()
@@ -100,8 +108,16 @@ public boolean isWon()
       }
     }
   }
+  
   //your code here
   return false;
+}
+public void testBiatch(){
+  for (int i = 0; i < NUM_ROWS; i++) {
+    for (int j = 0; j < NUM_COLS; j++) {
+      System.out.println(buttons[i][j].clicked);
+    }
+  }
 }
 public void displayWinningMessage()
 {
@@ -181,7 +197,7 @@ public class UIButton
 }
 public class MSButton
 {
-  private int r, c, Color;
+  private int r, c, Color1,Color2,Color3;
   private float x, y, width, height;
   private boolean clicked, marked, cheatmark;
   private String label;
@@ -212,8 +228,10 @@ public class MSButton
 
   public void mousePressed () 
   {
+   
 
     bombs1 = new ArrayList <MSButton> ();
+   
     if (restartbutton == this) {
       for (int r = 0; r < NUM_ROWS; r++) {
 
@@ -233,10 +251,14 @@ public class MSButton
     if (gameOver == true) {
       return;
     }
-    if (clicked == false)
+    if (clicked == false){
       clicked = true;
-    else 
-    return;
+    }else if(flagButton==this){
+      clicked = false;
+      
+    }else{
+      return;
+    }
 
 
 
@@ -245,32 +267,32 @@ public class MSButton
     } else if (bombs.contains(this)) {
       displayLosingMessage();
       gameOver = true;
-    } else if (countBombs(r, c) > 0) {
+    } else if (countBombs(r, c) > 0&&flagButton!=this) {
       setLabel(label + countBombs(r, c));
     } else {
 
-      if (isValid(r+1, c+1) && !buttons[r+1][c+1].isClicked()) {
+      if (isValid(r+1, c+1) && !buttons[r+1][c+1].isClicked()&&flagButton!=this) {
         buttons[r+1][c+1].mousePressed();
       }
-      if (isValid(r-1, c-1) && !buttons[r-1][c-1].isClicked()) {
+      if (isValid(r-1, c-1) && !buttons[r-1][c-1].isClicked()&&flagButton!=this) {
         buttons[r-1][c-1].mousePressed();
       }
-      if (isValid(r, c+1) && !buttons[r][c+1].isClicked()) {
+      if (isValid(r, c+1) && !buttons[r][c+1].isClicked()&&flagButton!=this) {
         buttons[r][c+1].mousePressed();
       }
-      if (isValid(r, c-1) && !buttons[r][c-1].isClicked()) {
+      if (isValid(r, c-1) && !buttons[r][c-1].isClicked()&&flagButton!=this) {
         buttons[r][c-1].mousePressed();
       }
-      if (isValid(r+1, c) && !buttons[r+1][c].isClicked()) {
+      if (isValid(r+1, c) && !buttons[r+1][c].isClicked()&&flagButton!=this) {
         buttons[r+1][c].mousePressed();
       }
-      if (isValid(r-1, c) && !buttons[r-1][c].isClicked()) {
+      if (isValid(r-1, c) && !buttons[r-1][c].isClicked()&&flagButton!=this) {
         buttons[r-1][c].mousePressed();
       }
-      if (isValid(r-1, c+1) && !buttons[r-1][c+1].isClicked()) {
+      if (isValid(r-1, c+1) && !buttons[r-1][c+1].isClicked()&&flagButton!=this) {
         buttons[r-1][c+1].mousePressed();
       }
-      if (isValid(r+1, c-1) && !buttons[r+1][c-1].isClicked()) {
+      if (isValid(r+1, c-1) && !buttons[r+1][c-1].isClicked()&&flagButton!=this) {
         buttons[r+1][c-1].mousePressed();
       }
     }
@@ -279,9 +301,12 @@ public class MSButton
 
   public void draw () 
   { 
+    if(flagButton==this&&flagButton.clicked==true){
+      Color1=255;
+    }
     if (cheatmark==true)
     {
-      fill(0, 0, Color);
+      fill(Color1, Color2, Color3);
     } else if (marked) {
       fill(0);
     } else if ( clicked && bombs.contains(this) ) 
