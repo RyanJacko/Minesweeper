@@ -72,7 +72,7 @@ public void draw ()
       if (markbutton.isClicked()==true) {  
         buttons[i][j].cheatmark = true;
         buttons[i][j].Color3 = 255;
-        System.out.println(buttons[i][j].Color3);
+        //System.out.println(buttons[i][j].Color3);
       }
     }
   }
@@ -92,12 +92,12 @@ public void draw ()
   }
   fill(0);
   rect(420, 150, 50, 50);
-  fill(255,0,0);  
-  text("BUTTONS CHECKED"+" --> "+TOTAL+"/400",510,310);
-  fill(0,255,0); 
-  text("BOMBS DIFFUSED"+" --> "+"x"+"/"+bombs.size(),500,390);
+  fill(255, 0, 0);  
+  text("BUTTONS CHECKED"+" --> "+TOTAL+"/400", 510, 310);
+  fill(0, 255, 0); 
+  text("BOMBS DIFFUSED"+" --> "+"x"+"/"+bombs.size(), 500, 390);
   fill(255);
-  System.out.println(TOTAL+","+isWon()+","+(bombs.size()+TOTAL)+";");
+  //System.out.println(TOTAL+","+isWon()+","+(bombs.size()+TOTAL)+";");
   //System.out.println(isWon());
   //text(numMarkedBombs, 420, 150);
 }
@@ -171,7 +171,7 @@ public class UIButton
   {
     if (clicked == false) {
       clicked = true;
-    } else if (clicked = true) {
+    } else {
       clicked = false;
     }
   }
@@ -181,7 +181,7 @@ public class UIButton
   }
   public void draw () {
     if (clicked==true) {
-      //cheating = true;
+
       fill( 200 );
     } else {
       fill( 100 );
@@ -195,7 +195,7 @@ public class MSButton
 {
   private int r, c, Color1, Color2, Color3;
   private float x, y, width, height;
-  private boolean clicked, marked, cheatmark, counted;
+  private boolean clicked, marked, cheatmark, counted, Flagged;
   private String label;
   public MSButton ( int rr, int cc )
   {
@@ -220,6 +220,10 @@ public class MSButton
   // called by manager
   public void mousePressed () 
   {
+    if(flagButton.clicked==true)
+    {
+      flagged=true;
+    }
     bombs1 = new ArrayList <MSButton> ();
     if (restartbutton == this&&TOTAL==0&&bombs.size()<70) {
       for (int r = 0; r < NUM_ROWS; r++) {
@@ -235,6 +239,7 @@ public class MSButton
       gameOver = false;
       return;
     }
+
     if (gameOver == true) {
       return;
     }
@@ -281,76 +286,83 @@ public class MSButton
     }
     //your code here
   }
+
   public void draw () 
   { 
-    if (flagButton==this&&flagButton.clicked==true) {
+    if (Flagged==true) {
       Color1=255;
-    }
-    if (cheatmark==true)
-    {
-      fill(Color1, Color2, Color3);
-    } else if (marked) {
+    } else {
+      if (Flagged==true) {
+        Color1=255;
+      }
+      if (cheatmark==true)
+      {
+        fill(Color1, Color2, Color3);
+      } else if (marked) {
+        fill(0);
+      } else if ( clicked && bombs.contains(this) ) { 
+        fill(255, 0, 0);
+      } else if (clicked) {
+        fill( 200 );
+      } else { 
+        fill( 100 );
+      }
+      rect(x, y, width, height);
       fill(0);
-    } else if ( clicked && bombs.contains(this) ) { 
-      fill(255, 0, 0);
-    } else if (clicked) {
-      fill( 200 );
-    } else { 
-      fill( 100 );
-    }
-    rect(x, y, width, height);
-    fill(0);
-    text(label, x+width/2, y+height/2);
-    if (buttons[r][c].isClicked() && bombs.contains(buttons[r][c])) {
+      text(label, x+width/2, y+height/2);
+      if (buttons[r][c].isClicked() && bombs.contains(buttons[r][c])) {
 
-      displayLosingMessage();
+        displayLosingMessage();
+      }
     }
-  }
-  public void setLabel(String newLabel)
-  {
-    label = newLabel;
-  }
-  public boolean isValid(int r, int c)
-  {
-    // if(0 <= r && r <= NUM_ROWS-1 && 0 <= c && c <= NUM_COLS-1){
-    //     return true;
-    // }
-    // //your code here
-    // return false;
-    if (r < 0) return false;
-    else if (r >= NUM_ROWS) return false;
-    else if (c < 0) return false;
-    else if (c >= NUM_COLS) return false;
-    else return true;
-  }
-  public int countBombs(int row, int col)
-  {
-    int numBombs = 0;
-    if (isValid(row-1, col-1) && bombs.contains(buttons[row-1][col-1])) {
-      numBombs++;
+  
+    
+      public void setLabel(String newLabel)
+    {
+      label = newLabel;
     }
-    if (isValid(row-1, col+1) && bombs.contains(buttons[row-1][col+1])) {
-      numBombs++;
+    public boolean isValid(int r, int c)
+    {
+      // if(0 <= r && r <= NUM_ROWS-1 && 0 <= c && c <= NUM_COLS-1){
+      //     return true;
+      // }
+      // //your code here
+      // return false;
+      if (r < 0) return false;
+      else if (r >= NUM_ROWS) return false;
+      else if (c < 0) return false;
+      else if (c >= NUM_COLS) return false;
+      else return true;
     }
-    if (isValid(row-1, col) && bombs.contains(buttons[row-1][col])) {
-      numBombs++;
-    }  
-    if (isValid(row, col-1) && bombs.contains(buttons[row][col-1])) {
-      numBombs++;
-    }    
-    if (isValid(row, col+1) && bombs.contains(buttons[row][col+1])) {
-      numBombs++;
+    public int countBombs(int row, int col)
+    {
+      int numBombs = 0;
+      if (isValid(row-1, col-1) && bombs.contains(buttons[row-1][col-1])) {
+        numBombs++;
+      }
+      if (isValid(row-1, col+1) && bombs.contains(buttons[row-1][col+1])) {
+        numBombs++;
+      }
+      if (isValid(row-1, col) && bombs.contains(buttons[row-1][col])) {
+        numBombs++;
+      }  
+      if (isValid(row, col-1) && bombs.contains(buttons[row][col-1])) {
+        numBombs++;
+      }    
+      if (isValid(row, col+1) && bombs.contains(buttons[row][col+1])) {
+        numBombs++;
+      }
+      if (isValid(row+1, col-1) && bombs.contains(buttons[row+1][col-1])) {
+        numBombs++;
+      }
+      if (isValid(row+1, col+1) && bombs.contains(buttons[row+1][col+1])) {
+        numBombs++;
+      }
+      if (isValid(row+1, col) && bombs.contains(buttons[row+1][col])) {
+        numBombs++;
+      }
+      //your code here
+      return numBombs;
     }
-    if (isValid(row+1, col-1) && bombs.contains(buttons[row+1][col-1])) {
-      numBombs++;
-    }
-    if (isValid(row+1, col+1) && bombs.contains(buttons[row+1][col+1])) {
-      numBombs++;
-    }
-    if (isValid(row+1, col) && bombs.contains(buttons[row+1][col])) {
-      numBombs++;
-    }
-    //your code here
-    return numBombs;
   }
 }
