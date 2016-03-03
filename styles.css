@@ -1,6 +1,10 @@
 body {
-    background-color: rgb(200,200,200);
-    color: rgb(0,0,0);
+    
+    background-image: url("Mine_256x256_32.png");
+    background-repeat: no-repeat;
+    background-position: 500px 400px;
+    background-color: black;
+    color: rgb(200,50,50);
     font-family: "Open Sans", sans-serif;
     text-align: center;
 }
